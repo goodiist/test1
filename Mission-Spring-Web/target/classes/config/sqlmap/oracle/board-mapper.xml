@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.bit.board.dao.BoardDAO">
+	
+	
+	<sql id="selectAll">
+		SELECT no, title, writer, content, view_cnt, to_char(reg_date, 'yyyy-mm-dd') as reg_date FROM t_board
+	</sql>
+	
+	
+	
+	<!-- 전체 게시글 조회  -->
+	<select id="selectAllBoard" resultMap="MapBoardVO">
+		<include refid="selectAll"/>
+		 ORDER BY no DESC
+	</select>
+	
+	<!-- t_board의 view_cnt, reg_date mapping -->
+	<resultMap type="boardVO" id="MapBoardVO">
+		<result column="view_cnt" property="viewCnt"/>
+		<result column="reg_date" property="regDate"/>
+	</resultMap>
+	
+	<!-- 새글 등록 -->
+	<insert id="insertBoard" parameterType="boardVO" >
+		INSERT INTO t_board(no, title, writer, content) VALUES(seq_t_board_no.nextval, #{title}, #{writer}, #{content})
+	</insert>
+	
+	<!-- 글 번호 조회 -->
+	<select id="selectByNo" parameterType="int" resultMap="MapBoardVO">
+		<include refid="selectAll"/>
+		where no = #{no}
+	</select>
+	
+</mapper>
